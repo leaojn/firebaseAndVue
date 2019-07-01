@@ -1,28 +1,38 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <Navbar></Navbar>
+    <router-view></router-view>
+    {{isLogged}}
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from "./components/Navbar";
+import firebase from 'firebase'
 
 export default {
-  name: 'app',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    Navbar
+  },
+  
+  data() {
+    return {
+      title: process.env.VUE_APP_TITLE,
+      key_api: process.env.VUE_APP_FIREBASE_API_KEY
+      
+    };
+  },
+  created() {
+     var vm = this
+     firebase.auth().onAuthStateChanged(function(user) {
+       if (user) {
+         const usuario = {
+           usuario: user
+         }
+         vm.$store.commit('setUser',usuario);
+      }
+    });
+  },
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
